@@ -4,7 +4,7 @@
 #include <string>
 using namespace std;
 //menu function by Amir
-void menu() {
+void menu(int &bot) {
     for (int i = 0; i < 5; i++) {
         cout << endl;
     }
@@ -21,6 +21,7 @@ void menu() {
         cout << endl;
     }
     cout << "\t>> ";
+    bot += 1;
 }
 //average function made by Muhammed
 double avg(double marks[50], double times) {
@@ -49,7 +50,7 @@ double low(double marks[50], double times) {
     return low;
 }
 //find highest function made by Rayyan
-double high(double marks[100], double times) {
+double high(double marks[50], double times) {
     double high = marks[0];
     for (int i = 0; i < times; i++) {
         if (marks[i] > high) {
@@ -58,10 +59,13 @@ double high(double marks[100], double times) {
     }
     return high;
 }
+void changetoLow(char &ch) {
+    cout << "Please enter the the quiz that you want to change it's marks";
+}
 //student struct with name Muhammed
 struct student {
     string name;
-    long int studentID;
+    long long int studentID;
     double marks[50];
 };
 int main() {
@@ -70,6 +74,7 @@ int main() {
     string fileName;
     ofstream outfile;
     ifstream infile;
+    int bot=0; //used to know how many times menu function was invoked
     //opening menu made by Hadi
     cout << "\t***Student Marks Management***\n";
     cout << "\t----------------------------------------------------\n\n";
@@ -81,17 +86,19 @@ int main() {
         //input student name Hadi
         cout << ">> Please enter you name: ";
         cin >> students[k].name;
-
+        cin.ignore();
+        cout << "Please enter your student ID: ";
+        cin >> students[k].studentID;
+        cin.ignore();
         //loop for entering how many quizes taken by Hadi
-    do {
-        cout << "\n>> Please enter how many quizes have you taken: ";
-        cin >> times;
-        //if statement used so if the user entered invalid input or inputed more then 50
-        if (times <= 0 || times > 50) {
-            cout << "\n>> Invalid input please enter correct input\n\n";
-        }
-    } while (times <= 0);
-        
+        do {
+            cout << "\n>> Please enter how many quizes have you taken: ";
+            cin >> times;
+            //if statement used so if the user entered invalid input or inputed more then 50
+            if (times <= 0 || times > 50) {
+                cout << "\n>> Invalid input please enter correct input\n\n";
+            }
+        } while (times <= 0);
         //input of marks using a file made by Omar
         cout << ">> Do you want to input the marks using a file (Please include path directory) choose yes or no (y or n): \n" << "\t>> ";
         cin >> ch;
@@ -125,61 +132,62 @@ int main() {
         }
         //menu function and it being loop by Amir and choice selection using switch made by Omar
         do { //do while loop used so the user can switch between choices and if the user enter invalid input
-            menu(); //menu function being called
+            menu(bot); //menu function being called
             cin >> ch;
             ch_out = tolower(ch);
             //switch statement to choose from the menu
             switch (ch_out) {
-            case 'c': { //case c which calculates the total marks by calling sum function 
-                cout << "\nThe total of all marks is: " << sum(students[k].marks, times) << endl << "Name: " << students[k].name << endl;
-                break;
-            }
-            case 'a': { //case a which calculates the average mark by calling avg function 
-                cout << "\nThe average of all marks is: " << avg(students[k].marks, times) << endl << "Name: " << students[k].name << endl;
-                break;
-            }
-            case 'h': { //case h which finds the highest mark by calling high function
-                cout << "\nThe highest mark is: " << high(students[k].marks, times) << endl << "Name: " << students[k].name << endl;
-                break;
-            }
-            case 'l': { //case l which finds the lowest mark by calling low function
-                cout << "\nThe lowest mark is: " << low(students[k].marks, times) << endl << "Name: " << students[k].name << endl;
-                break;
-            }
-            case 's': { //case s which calls the sum and avg and high and low functions and stores them in a file made by Rayyan
-                cin.ignore();
-                //if statement used to check if the user already opened the file before if not the user can input a name and a path for the output file
-                if (!outfile.is_open()) {
-                cout << "Enter the file name you want (it must include .txt at the end): ";
-                getline(cin,fileName); //to input the name and path of the file by using getline so spaces can be included
+                case 'c': { //case c which calculates the total marks by calling sum function 
+                    cout << "\nThe total of all marks is: " << sum(students[k].marks, times) << endl << "Name: " << students[k].name << endl << students[k].studentID << endl;
+                    break;
+                }
+                case 'a': { //case a which calculates the average mark by calling avg function 
+                    cout << "\nThe average of all marks is: " << avg(students[k].marks, times) << endl << "Name: " << students[k].name << endl << students[k].studentID << endl;
+                    break;
+                }
+                case 'h': { //case h which finds the highest mark by calling high function
+                    cout << "\nThe highest mark is: " << high(students[k].marks, times) << endl << "Name: " << students[k].name << endl << students[k].studentID << endl;
+                    break;
+                }
+                case 'l': { //case l which finds the lowest mark by calling low function
+                    cout << "\nThe lowest mark is: " << low(students[k].marks, times) << endl << "Name: " << students[k].name << endl << students[k].studentID << endl;
+                    break;
+                }
+                case 's': { //case s which calls the sum and avg and high and low functions and stores them in a file made by Rayyan
+                    cin.ignore();
+                    //if statement used to check if the user already opened the file before if not the user can input a name and a path for the output file
+                    if (!outfile.is_open()) {
+                    cout << "Enter the file name you want (it must include .txt at the end): ";
+                    getline(cin,fileName); //to input the name and path of the file by using getline so spaces can be included
                 
-                    outfile.open(fileName, ios::out); //opens the output file named by the user
+                        outfile.open(fileName, ios::out); //opens the output file named by the user
+                    }
+                    //the sum and avg and high and low functions being called and being stored in the file
+                    outfile <<"Name: " << students[k].name << endl <<"Student ID: "<<students[k].studentID<<endl << "\nThe total of all marks is: " << sum(students[k].marks, times) << endl;
+                    outfile << "\nThe average of all marks is: " << avg(students[k].marks, times) << endl;
+                    outfile << "\nThe highest mark is: " << high(students[k].marks, times) << endl;
+                    outfile << "\nThe lowest mark is: " << low(students[k].marks, times) << endl;
+                    break;
                 }
-                //the sum and avg and high and low functions being called and being stored in the file
-                outfile <<"Name: " << students[k].name << endl << "\nThe total of all marks is: " << sum(students[k].marks, times) << endl;
-                outfile << "\nThe average of all marks is: " << avg(students[k].marks, times) << endl;
-                outfile << "\nThe highest mark is: " << high(students[k].marks, times) << endl;
-                outfile << "\nThe lowest mark is: " << low(students[k].marks, times) << endl;
-                break;
-            }
-            case 'e': { //case e is the the exit program or change student if the user enter more then 1 student
-                if (manyStu > 1 && k < manyStu) { //changes student if the user inputed more then 1 student
-                    cout << "\nChanging Student\n";
+                case 'e': { //case e is the the exit program or change student if the user enter more then 1 student
+                    if (manyStu > 1 && k < manyStu) { //changes student if the user inputed more then 1 student
+                        cout << "\nChanging Student\n";
+                    }
+                    else { //ends program if the user didn't input more then 1 student or after completing all students
+                        cout << "\nEnding program, good bye\n";
+                    }
+                    break;
                 }
-                else { //ends program if the user didn't input more then 1 student or after completing all students
-                    cout << "\nEnding program, good bye\n";
+                default: { //default case used if the user inputed the invalid input
+                    cout << "\nInvalid input\n";
+                    break;
                 }
-                break;
-            }
-            default: { //default case used if the user inputed the invalid input
-                cout << "\nInvalid input\n";
-                break;
-            }
             }
         } while (ch_out != 'e');
         infile.close(); //closes input of current file
     }
     outfile.close(); //closes the output file
+    cout << "The menu function was invoked " << bot << " times";
     return 0;
 }
 //compiled and debugged by Hadi
